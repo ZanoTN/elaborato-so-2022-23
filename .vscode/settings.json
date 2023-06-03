@@ -1,0 +1,11 @@
+{
+	"files.autoSave": "onFocusChange",
+	"files.associations": {
+		"errorexit.h": "c",
+		"types.h": "c",
+		"shared_memory.h": "c",
+		"error_exit.h": "c",
+		"semaphore.h": "c",
+		"stdio.h": "c"
+	}
+}

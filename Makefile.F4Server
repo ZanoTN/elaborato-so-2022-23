@@ -1,0 +1,38 @@
+# Compiler and flags
+CC := gcc
+CFLAGS := -Wall -g
+
+# Directories
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin
+
+# Source files
+SRCS := $(SRC_DIR)/F4Server.c $(SRC_DIR)/error_exit.c $(SRC_DIR)/shared_memory.c $(SRC_DIR)/semaphore.c $(SRC_DIR)/fifo.c $(SRC_DIR)/printlog.c $(SRC_DIR)/server.c $(SRC_DIR)/message_queue.c
+
+# Object files
+OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+
+# Executable name
+TARGET := F4Server
+
+all: $(TARGET)
+
+create_obj_dir:
+	@mkdir -p $(OBJ_DIR)
+
+create_bin_dir:
+	@mkdir -p $(BIN_DIR)
+
+$(TARGET): $(OBJS) | create_bin_dir
+	@echo "LINK $<"
+	$(CC) $(CFLAGS) -o $(BIN_DIR)/$@ $^
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | create_obj_dir
+	@echo "COMPILE $<"
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+clean:
+	rm -f $(OBJ_DIR)/*.o $(BIN_DIR)/$(TARGET)
+
+.PHONY: all clean create_obj_dir create_bin_dir
