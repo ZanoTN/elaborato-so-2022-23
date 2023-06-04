@@ -6,6 +6,7 @@
 		"shared_memory.h": "c",
 		"error_exit.h": "c",
 		"semaphore.h": "c",
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"printlog.h": "c"
 	}
 }

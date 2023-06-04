@@ -4,10 +4,20 @@
 #include"../inc/server.h"
 #include"../inc/shared_memory.h"
 #include"../inc/semaphore.h"
-#include"../inc/fifo.h"
 #include"../inc/message_queue.h"
 
+
 struct player_struct player[2];
+unsigned short rows = 0;
+unsigned short columns = 0;
+
+
+
+void initServer() {
+	initSharedMemory(atoi(argv[1]), atoi(argv[2]));
+	intiMessageQueue();
+	intiSemaphore();
+}
 
 void intiMessageQueue() {
 	connectToMessageQueue();

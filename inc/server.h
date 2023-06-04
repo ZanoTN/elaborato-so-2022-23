@@ -9,6 +9,12 @@ struct player_struct {
 };
 
 extern struct player_struct player[];
+extern unsigned short rows;
+extern unsigned short columns;
+
+
+/// @brief Inizializzazione del server
+void initServer();
 
 /// @brief Init Shared Memory
 void initSharedMemory(unsigned short hight, unsigned short whith);

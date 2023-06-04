@@ -19,6 +19,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	// Inizializzatione del server
+	initServer();
+
 	initSharedMemory(atoi(argv[1]), atoi(argv[2]));
 	intiMessageQueue();
 	intiSemaphore();
