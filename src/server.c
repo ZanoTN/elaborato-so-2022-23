@@ -10,6 +10,7 @@
 #include"../inc/message_queue.h"
 #include"../inc/forza4.h"
 
+
 struct player_struct player[2];
 time_t timeLastSIGINT = 0;
 
