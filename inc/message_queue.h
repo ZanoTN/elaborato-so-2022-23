@@ -16,7 +16,7 @@ struct RequestJoinToMatch {
 };
 
 
-
+typedef struct RequestJoinToMatch RequestJoinToMatch_t;
 extern size_t size[];
 
 /// @brief Connessione alla message queue con key generata da ftok; 

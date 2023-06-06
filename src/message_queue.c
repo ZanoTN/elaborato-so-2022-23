@@ -1,4 +1,4 @@
-	#include<stdio.h>
+#include<stdio.h>
 #include<sys/ipc.h>
 #include <sys/msg.h>
 #include<sys/stat.h>
@@ -20,7 +20,7 @@ void connectToMessageQueue() {
 		return;
 	}
 
-	key_t key = ftok("LICENSE", 'b');
+	key_t key = ftok("LICENSE", 'q');
 	if(key == -1) {
 		errExit("msq: ftok()");
 	}
@@ -42,7 +42,7 @@ void disconectFromMessageQueue() {
 	printf("[DEBUG] Rimozione message queue... ");
 
 	if(msqid == 0) {
-		return	;
+		return;
 	}
 
 	if(msgctl(msqid, IPC_RMID, NULL) == -1) {

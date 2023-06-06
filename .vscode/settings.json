@@ -6,6 +6,12 @@
 		"shared_memory.h": "c",
 		"error_exit.h": "c",
 		"semaphore.h": "c",
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"stdlib.h": "c",
+		"f4client.h": "c",
+		"printlog.h": "c",
+		"signal.h": "c",
+		"string.h": "c",
+		"ipc.h": "c"
 	}
 }

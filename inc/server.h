@@ -2,31 +2,26 @@
 #define SERVER_H_
 
 #include<sys/types.h>
+#include<time.h>
 
 struct player_struct {
 	pid_t pid;
+	char symbol;
 	char username[];
 };
 
 extern struct player_struct player[];
+extern time_t timeLastSIGINT;
 
-/// @brief Init Shared Memory
-void initSharedMemory(unsigned short hight, unsigned short whith);
 
-/// @brief Init Semaphore
-void intiSemaphore();
+/// @brief Handler for SIGINT
+void sigHandlerInt(int signum);
 
-/// @brief Init Message queue
-void intiMessageQueue();
+/// @brief Initialize all connection for server
+void initServer();
 
-/// @brief Rimozione della message queue
-void delMessageQueue();
-
-/// @brief Rimozione della memoria condivisa
-void delSharedMemory();
-
-/// @brief Rimozione set semafori
-void delSemaphore();
+/// @brief Close alla connection all connection of the server
+void closeServer();
 
 /// @brief Attende il collegamento dei due utenti
 void getUser();

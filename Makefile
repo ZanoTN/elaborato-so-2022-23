@@ -18,11 +18,25 @@ create_bin_dir:
 
 F4server: create_bin_dir
 	@echo -e "> \033[0;31mCOMPILE SERVER\033[0m"
-	$(CC) $(CFLAGS) -o bin/F4Server $(SRC_DIR)/server.c $(SRC_DIR)/error_exit.c $(SRC_DIR)/my_own_library_max_dim.c $(SRC_DIR)/fifo.c
+	$(CC) $(CFLAGS) -o bin/F4Server \
+	src/F4Server.c \
+	src/server.c \
+	src/error_exit.c \
+	src/message_queue.c \
+	src/shared_memory.c \
+	src/semaphore.c \
+	src/forza4.c
 
 F4client: create_bin_dir
 	@echo -e "> \033[0;32mCOMPILE CLIENT\033[0m"
-	$(CC) $(CFLAGS) -o bin/F4Client $(SRC_DIR)/client.c $(SRC_DIR)/error_exit.c $(SRC_DIR)/my_own_library_max_dim.c $(SRC_DIR)/fifo.c
+	$(CC) $(CFLAGS) -o bin/F4Client \
+	src/F4Client.c \
+	src/client.c \
+	src/error_exit.c \
+	src/message_queue.c \
+	src/shared_memory.c \
+	src/semaphore.c \
+	src/forza4.c
 
 
 clean: create_bin_dir

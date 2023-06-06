@@ -1,44 +1,67 @@
-#include <stdio.h>
+#include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
+#include<signal.h>
 
 #include"../inc/server.h"
+#include"../inc/error_exit.h"
 #include"../inc/shared_memory.h"
 #include"../inc/semaphore.h"
-#include"../inc/fifo.h"
 #include"../inc/message_queue.h"
+#include"../inc/forza4.h"
 
 struct player_struct player[2];
+time_t timeLastSIGINT = 0;
 
-void intiMessageQueue() {
+void sigHandlerInt(int signum) {
+	time_t now = time(NULL);
+
+	if(now - timeLastSIGINT <= 5) { // Esco dal programma
+		printf("\033[0;31m[DEBUG] Avvio chiusura forzata!\033[0m\n");
+		closeServer();
+		exit(0);
+	} else {
+		timeLastSIGINT = now;
+	}
+}
+
+void initServer(char *argv[]) {
+	int hight = atoi(argv[1]);
+	int whith = atoi(argv[2]);
+
+	player[0].symbol = argv[3][0];
+	player[1].symbol = argv[3][0];
+
+	if (signal(SIGINT, sigHandlerInt) == SIG_ERR) {
+		errExit("signal(SIGINT, sigHandlerInt)");
+	}
+
 	connectToMessageQueue();
-}
-
-void initSharedMemory(unsigned short hight, unsigned short whith) {
-	// Solo per server
 	genereteServerSharedMemory(hight, whith);
-}
-
-void intiSemaphore() {
 	genereteSemaphore(3);
+
+	// forza4 lib
+	passVariableToF4Lib(shm_pointer, hight, whith);
+	generateGameField();
+	// printGameFieldFormatted(char_player_1, char_player_2);
+	// printGameFieldRaw();
+
 }
 
-void delMessageQueue() {
+void closeServer() {
+
+	// TODO: kill and wait for all client terminate
+
 	disconectFromMessageQueue();
-}
-
-void delSharedMemory() {
 	removeServerSharedMemory();
-}
-
-void delSemaphore() {
 	removeSetSemaphore();
 }
 
+
 void getUser() {
 	printf("[DEBUG] In attesa dei due utenti...\n");
-	printf("[DEBUG] shmid: %d\n", shmid);
 
-	for(unsigned short i=0; i<2; i++) {
+	for(u_int8_t i=0; i<2; i++) {
 		
 		struct RequestJoinToMatch buffer;
 		reciveMsg(1, &buffer);
@@ -53,5 +76,4 @@ void getUser() {
 		buffer.sharedMemoryId = shmid;
 		sendMsg(buffer.mtype, &buffer);
 	}
-
 }
