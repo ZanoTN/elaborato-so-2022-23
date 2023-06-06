@@ -12,11 +12,11 @@ extern time_t timeLastSIGINT;
 void sigHandlerInt(int signum);
 
 /// @brief Inizializzazione del client
-void initClient(char *argv[]);
+void initClient();
 
 /// @brief Invio di una richiesta di collegamento al server (partita)
 /// @param username Username for the request
-void sendRequestJoin(char username[50]);
+void requestJoin(char username[50]);
 
 /// @brief Close server
 void closeClient();

@@ -15,6 +15,10 @@ struct player_struct player[2];
 time_t timeLastSIGINT = 0;
 
 void sigHandlerInt(int signum) {
+	if(signum != SIGINT) {
+		return;
+	}
+
 	time_t now = time(NULL);
 
 	if(now - timeLastSIGINT <= 5) { // Esco dal programma
@@ -64,17 +68,19 @@ void getUser() {
 
 	for(u_int8_t i=0; i<2; i++) {
 		
-		struct RequestJoinToMatch buffer;
+		requestJoinToMatch_t buffer;
 		reciveMsg(1, &buffer);
 		
 		player[i].pid = buffer.pidClient;
 		strcpy(player[i].username, buffer.userName);
-
 		printf("[DEBUG] New request to join { pid: %d, username: \"%s\" }\n", player[i].pid, player[i].username);
-		buffer.mtype = 1;
-		buffer.nrClient = i;
-		buffer.approved = 1;
-		buffer.sharedMemoryId = shmid;
-		sendMsg(buffer.mtype, &buffer);
+		
+		
+		respodeToRequest_t buffer2;
+		buffer2.mtype = 2;
+		buffer2.nrClient = i;
+		buffer2.approved = 1;
+		buffer2.sharedMemoryId = shmid;
+		sendMsg(buffer2.mtype, &buffer2);
 	}
 }

@@ -12,6 +12,10 @@
 time_t timeLastSIGINT = 0;
 
 void sigHandlerInt(int signum) {
+	if(signum != SIGINT) {
+		return;
+	}
+
 	time_t now = time(NULL);
 
 	if(now - timeLastSIGINT <= 5) { // Esco dal programma
@@ -24,7 +28,9 @@ void sigHandlerInt(int signum) {
 	}
 }
 
-void initClient(char *argv[]) {
+void initClient() {
+	system("clear");
+
 	if (signal(SIGINT, sigHandlerInt) == SIG_ERR) {
 		errExit("signal(SIGINT, sigHandlerInt)");
 	}
@@ -33,14 +39,22 @@ void initClient(char *argv[]) {
 
 }
 
-void sendRequestJoin(char username[50]) {
+void requestJoin(char username[50]) {
 	printf("[DEBUG] Send request to join");
-	RequestJoinToMatch_t buf;
+	requestJoinToMatch_t buf;
 	
 	buf.mtype = 1;
-	buf.pidClient = getgid();
+	buf.pidClient = getpid();
 	strcpy(buf.userName, username);
 	sendMsg(buf.mtype, &buf);
+	
+	respodeToRequest_t buf2;
+	reciveMsg(2, &buf2);
+	if(buf2.approved == 1) {
+		attachSharedMemory(buf2.sharedMemoryId);
+		printf("[DEBUG] Recice responde { nrClient: %d }\n", buf2.nrClient);
+	}
+
 }
 
 void closeClient() {

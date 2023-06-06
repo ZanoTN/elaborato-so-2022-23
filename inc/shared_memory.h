@@ -18,6 +18,6 @@ void removeServerSharedMemory();
 /// @brief Collegamento alla memoria condivisa
 /// @param _shmid Id della memoria condivisa
 /// @return Puntatore alla memoria
-char* attachSharedMemory(int _shmid);
+int8_t* attachSharedMemory(int _shmid);
 
 #endif

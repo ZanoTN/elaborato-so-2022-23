@@ -12,6 +12,8 @@
 		"printlog.h": "c",
 		"signal.h": "c",
 		"string.h": "c",
-		"ipc.h": "c"
+		"ipc.h": "c",
+		"cstdint": "c",
+		"client.h": "c"
 	}
 }

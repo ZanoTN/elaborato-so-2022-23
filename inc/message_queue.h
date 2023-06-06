@@ -3,21 +3,32 @@
 
 #include<sys/types.h>
 
-extern int msqid;
 
-// Struct per la richiesta di accedere ad una partita
-struct RequestJoinToMatch {
+
+// client: Richiesta di accedere ad una partita
+struct requestJoinToMatch {
 	long mtype;
 	pid_t pidClient;					// Client & Server: pid_t del client
 	char userName[50];				// Client: Unsername del client
+};
+
+// server: Risposta del server al client
+struct respodeToRequest {
+	long mtype;
+	pid_t pidClient;					// Client & Server: pid_t del client
 	int sharedMemoryId;				// Server: ID della memoria condivisa
-	unsigned short approved;	// Server: Richiesta approvata
-	unsigned short nrClient;	// Server: Numero del client
+	int8_t approved;					// Server: Richiesta approvata
+	int8_t nrClient;					// Server: Numero del client
 };
 
 
-typedef struct RequestJoinToMatch RequestJoinToMatch_t;
+typedef struct respodeToRequest respodeToRequest_t;
+typedef struct requestJoinToMatch requestJoinToMatch_t;
+
+
+extern int msqid;
 extern size_t size[];
+
 
 /// @brief Connessione alla message queue con key generata da ftok; 
 void connectToMessageQueue();

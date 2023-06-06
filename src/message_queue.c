@@ -10,7 +10,8 @@ int msqid = 0;
 
 size_t size[] = {
 	0,
-	sizeof(struct RequestJoinToMatch) - sizeof(long)
+	sizeof(requestJoinToMatch_t) - sizeof(long),
+	sizeof(respodeToRequest_t) - sizeof(long)
 };
 
 void connectToMessageQueue() {
@@ -59,9 +60,7 @@ void sendMsg(long mType, void* buf) {
 		errExit("sendMsg msqid undefined");
 	}
 
-	if(msgsnd(msqid, buf, size[mType], 0) == -1) {
-		errExit(" msq: msgsnd()");
-	}
+	while(msgsnd(msqid, buf, size[mType], IPC_NOWAIT) == -1) {}
 }
 
 void reciveMsg(long mType, void* buf) {
@@ -69,7 +68,5 @@ void reciveMsg(long mType, void* buf) {
 		errExit("reciveMsg msqid undefined");
 	}
 
-	if (msgrcv(msqid, buf, size[(int) mType], mType, 0) == -1) {
-		errExit("msgrcv failed");
-	}
+	while(msgrcv(msqid, buf, size[(int) mType], mType, IPC_NOWAIT) == -1) {}
 }

@@ -12,12 +12,11 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
-
 	// Inizializzazione del client
-	initClient(argv);
+	initClient();
 
 	// Gioco
-	sendRequestJoin(argv[1]);
+	requestJoin(argv[1]);
 
 	closeClient();
 }

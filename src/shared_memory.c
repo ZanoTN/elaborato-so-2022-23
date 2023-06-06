@@ -57,11 +57,11 @@ void removeServerSharedMemory() {
 }
 
 
-char* attachSharedMemory(int _shmid) {
-	char* pointerToMemory;
+int8_t* attachSharedMemory(int _shmid) {
+	int8_t* pointerToMemory;
 	
 	pointerToMemory = shmat(_shmid, NULL, 0);
-	if(pointerToMemory == (void*)(-1)) {
+	if(pointerToMemory == (int8_t*)(-1)) {
 		errExit("shmget() failed");
 	}
 

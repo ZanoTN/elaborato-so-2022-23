@@ -12,7 +12,7 @@
 
 
 int main(int argc, char *argv[]) {
-
+	
 	if(checkArguments(argc, argv) == -1) {
 		return -1;
 	}
