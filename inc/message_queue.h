@@ -19,6 +19,7 @@ struct respodeToRequest {
 	int sharedMemoryId;				// Server: ID della memoria condivisa
 	int8_t approved;					// Server: Richiesta approvata
 	int8_t nrClient;					// Server: Numero del client
+	char symbols[2];					// Server: Send two symbols for user
 };
 
 

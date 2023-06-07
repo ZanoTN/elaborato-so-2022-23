@@ -11,6 +11,9 @@ extern time_t timeLastSIGINT;
 /// @brief Handler for SIGINT
 void sigHandlerInt(int signum);
 
+/// @brief Handler for SIGTERM
+void sigHandlerTerm(int signum);
+
 /// @brief Inizializzazione del client
 void initClient();
 
@@ -20,4 +23,7 @@ void requestJoin(char username[50]);
 
 /// @brief Close server
 void closeClient();
+
+/// @brief Run game
+void playGame();
 #endif

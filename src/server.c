@@ -3,6 +3,8 @@
 #include<stdlib.h>
 #include<signal.h>
 
+#include <sys/wait.h>
+
 #include"../inc/server.h"
 #include"../inc/error_exit.h"
 #include"../inc/shared_memory.h"
@@ -22,7 +24,7 @@ void sigHandlerInt(int signum) {
 	time_t now = time(NULL);
 
 	if(now - timeLastSIGINT <= 5) { // Esco dal programma
-		printf("\033[0;31m[DEBUG] Avvio chiusura forzata!\033[0m\n");
+		printf("\033[0;31m[DEBUG] Avvio chiusura! [SIGINT]\033[0m\n");
 		closeServer();
 		exit(0);
 	} else {
@@ -54,8 +56,21 @@ void initServer(char *argv[]) {
 }
 
 void closeServer() {
+	printf("[DEBUG] Terminazione dei client... ");
+	if(player[0].pid > 0) {
+		kill(player[0].pid, SIGTERM);
+	}
+	if(player[1].pid > 0) {
+		kill(player[1].pid, SIGTERM);
+	}
 
-	// TODO: kill and wait for all client terminate
+	if(player[0].pid > 0) {
+		while(waitpid(player[0].pid, 0, 0) == 0);
+	}
+	if(player[1].pid > 0) {
+		while(waitpid(player[1].pid, 0, 0) == 0);
+	}
+	printf("Fatto\n");
 
 	disconectFromMessageQueue();
 	removeServerSharedMemory();
@@ -83,4 +98,10 @@ void getUser() {
 		buffer2.sharedMemoryId = shmid;
 		sendMsg(buffer2.mtype, &buffer2);
 	}
+}
+
+void game() {
+	puts("[DEBUG] play game");
+
+	// Unclok sempaphore
 }

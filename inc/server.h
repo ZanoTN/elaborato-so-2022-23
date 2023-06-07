@@ -26,4 +26,7 @@ void closeServer();
 /// @brief Attende il collegamento dei due utenti
 void getUser();
 
+/// @brief @brief Play game 
+void game();
+
 #endif

@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
 
 	// Gioco
 	requestJoin(argv[1]);
+	playGame();
 
 	closeClient();
 }

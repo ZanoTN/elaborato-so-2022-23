@@ -19,7 +19,7 @@ void sigHandlerInt(int signum) {
 	time_t now = time(NULL);
 
 	if(now - timeLastSIGINT <= 5) { // Esco dal programma
-		printf("\033[0;31m[DEBUG] Avvio chiusura forzata!\033[0m\n");
+		printf("\033[0;31m[DEBUG] Avvio chiusura! [SIGINT]\033[0m\n");
 		closeClient();
 		// TODO: Send signale to server
 		exit(0);
@@ -28,11 +28,25 @@ void sigHandlerInt(int signum) {
 	}
 }
 
+void sigHandlerTerm(int signum) {
+	if(signum != SIGTERM) {
+		return;
+	}
+
+	printf("\033[0;31m[DEBUG] Avvio chiusura! [SIGTERM]\033[0m\n");
+	closeClient();
+	exit(0);
+}
+
 void initClient() {
 	system("clear");
 
 	if (signal(SIGINT, sigHandlerInt) == SIG_ERR) {
 		errExit("signal(SIGINT, sigHandlerInt)");
+	}
+
+	if (signal(SIGTERM, sigHandlerTerm) == SIG_ERR) {
+		errExit("signal(SIGTERM, sigHandlerTerm)");
 	}
 
 	connectToMessageQueue();
@@ -50,13 +64,22 @@ void requestJoin(char username[50]) {
 	
 	respodeToRequest_t buf2;
 	reciveMsg(2, &buf2);
-	if(buf2.approved == 1) {
-		attachSharedMemory(buf2.sharedMemoryId);
-		printf("[DEBUG] Recice responde { nrClient: %d }\n", buf2.nrClient);
-	}
+	printf("[DEBUG] Recice responde { approved: %d, nrClient: %d }\n",buf2.approved, buf2.nrClient);
 
+	if(buf2.approved == 1) {
+		shmid = buf2.sharedMemoryId;
+		shm_pointer = attachSharedMemory(shmid);
+	}
+}
+
+void playGame() {
+	while(1==1) {}
 }
 
 void closeClient() {
-	// detachSharedMemory();
+	// disconectFromMessageQueue(); only server can remove it
+
+	if(shmid != 0) {
+		detachSharedMemory();
+	}
 }
