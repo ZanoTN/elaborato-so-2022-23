@@ -8,6 +8,8 @@
 #include"../inc/error_exit.h"
 #include"../inc/message_queue.h"
 #include"../inc/shared_memory.h"
+#include"../inc/semaphore.h"
+#include"../inc/forza4.h"
 
 time_t timeLastSIGINT = 0;
 
@@ -67,13 +69,18 @@ void requestJoin(char username[50]) {
 	printf("[DEBUG] Recice responde { approved: %d, nrClient: %d }\n",buf2.approved, buf2.nrClient);
 
 	if(buf2.approved == 1) {
+		semid = buf2.semaphoreId;
 		shmid = buf2.sharedMemoryId;
 		shm_pointer = attachSharedMemory(shmid);
+		passVariableToF4Lib(shm_pointer, buf2.field_hight, buf2.field_width, buf2.symbols[0], buf2.symbols[1]);
 	}
 }
 
-void playGame() {
-	while(1==1) {}
+void game() {
+	puts("[DEGUB] In attesa dell'inizione della partita");
+
+
+	while(1==1);
 }
 
 void closeClient() {

@@ -17,9 +17,12 @@ struct respodeToRequest {
 	long mtype;
 	pid_t pidClient;					// Client & Server: pid_t del client
 	int sharedMemoryId;				// Server: ID della memoria condivisa
+	int semaphoreId;
 	int8_t approved;					// Server: Richiesta approvata
 	int8_t nrClient;					// Server: Numero del client
 	char symbols[2];					// Server: Send two symbols for user
+	u_int16_t field_hight;		// Server: hight of field
+	u_int16_t field_width;		// Server: width of field
 };
 
 

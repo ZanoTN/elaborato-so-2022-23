@@ -22,8 +22,7 @@ int main(int argc, char *argv[]) {
 
 	// Esecuzione del server
 	getUser();
-
-	while(1==1){}
+	game();
 
 	// Chiusura del programma
 	closeServer();

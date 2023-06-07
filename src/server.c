@@ -45,14 +45,15 @@ void initServer(char *argv[]) {
 
 	connectToMessageQueue();
 	genereteServerSharedMemory(hight, whith);
-	genereteSemaphore(3);
+	genereteSemaphore(2);
+
+	// Semaphore
+	int16_t arr[2] = {-1, 0};
+	setSemaphoreArray(arr);
 
 	// forza4 lib
-	passVariableToF4Lib(shm_pointer, hight, whith);
+	passVariableToF4Lib(shm_pointer, hight, whith, player[0].symbol, player[1].symbol);
 	generateGameField();
-	// printGameFieldFormatted(char_player_1, char_player_2);
-	// printGameFieldRaw();
-
 }
 
 void closeServer() {
@@ -96,12 +97,22 @@ void getUser() {
 		buffer2.nrClient = i;
 		buffer2.approved = 1;
 		buffer2.sharedMemoryId = shmid;
+		buffer2.semaphoreId = semid;
+		buffer2.field_hight = field_hight;
+		buffer2.field_width = field_width;
+		buffer2.symbols[0] = player[0].symbol;
+		buffer2.symbols[1] = player[1].symbol;
 		sendMsg(buffer2.mtype, &buffer2);
 	}
 }
 
 void game() {
-	puts("[DEBUG] play game");
+	puts("[DEBUG] Start game");
+	
+	// TODO: Send massage_q "start game"
 
 	// Unclok sempaphore
+
+	while(1);
+	
 }

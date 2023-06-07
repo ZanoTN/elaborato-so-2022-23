@@ -25,5 +25,6 @@ void requestJoin(char username[50]);
 void closeClient();
 
 /// @brief Run game
-void playGame();
+void game();
+
 #endif
