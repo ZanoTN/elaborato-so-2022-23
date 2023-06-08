@@ -2,6 +2,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include<signal.h>
+#include<unistd.h>
 
 #include <sys/wait.h>
 
@@ -37,7 +38,7 @@ void initServer(char *argv[]) {
 	int whith = atoi(argv[2]);
 
 	player[0].symbol = argv[3][0];
-	player[1].symbol = argv[3][0];
+	player[1].symbol = argv[4][0];
 
 	if (signal(SIGINT, sigHandlerInt) == SIG_ERR) {
 		errExit("signal(SIGINT, sigHandlerInt)");
@@ -48,12 +49,12 @@ void initServer(char *argv[]) {
 	genereteSemaphore(2);
 
 	// Semaphore
-	int16_t arr[2] = {-1, 0};
+	u_int16_t arr[2] = {0, 0};
 	setSemaphoreArray(arr);
 
 	// forza4 lib
 	passVariableToF4Lib(shm_pointer, hight, whith, player[0].symbol, player[1].symbol);
-	generateGameField();
+	generateGameField();	
 }
 
 void closeServer() {
@@ -89,10 +90,10 @@ void getUser() {
 		
 		player[i].pid = buffer.pidClient;
 		strcpy(player[i].username, buffer.userName);
-		printf("[DEBUG] New request to join { pid: %d, username: \"%s\" }\n", player[i].pid, player[i].username);
-		
+		printf("[DEBUG] New request to join { pid: %d, username: \"%s\" }\n", player[i].pid, player[i].username);	
 		
 		respodeToRequest_t buffer2;
+		buffer2.pidClient = buffer.pidClient;
 		buffer2.mtype = 2;
 		buffer2.nrClient = i;
 		buffer2.approved = 1;
@@ -109,10 +110,24 @@ void getUser() {
 void game() {
 	puts("[DEBUG] Start game");
 	
-	// TODO: Send massage_q "start game"
-
-	// Unclok sempaphore
-
-	while(1);
+	semaphoreOperation(0, 1);
+	puts("[DEBUG] Send messages to start game");
 	
+	printf("Wait for sem\n");
+	semaphoreOperation(0, 0);	// Client 0
+	startGame_t buf;
+	buf.mtype = 10;
+	buf.pidClient = player[0].pid;
+	printf("++ usernema %s ++",player[1].username );
+	strcpy(buf.enemy_username, player[1].username);
+	sendMsg(buf.mtype, &buf);
+
+	semaphoreOperation(1, 0);	// Client 1	
+	buf.pidClient = player[1].pid;
+	strcpy(buf.enemy_username, player[0].username);
+	sendMsg(buf.mtype, &buf);
+
+
+
+	while(1);	
 }

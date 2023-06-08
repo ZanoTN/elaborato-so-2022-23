@@ -40,11 +40,11 @@ void removeSetSemaphore() {
 	printf("Fatto\n");
 }
 
-void setSemaphoreArray(unsigned short semArray[]) {
+void setSemaphoreArray(u_int16_t semArray[]) {
 	union semnum {
 		int val;
 		struct semid_ds *buf;
-		unsigned short *array;
+		u_int16_t *array;
 	} arg;
 
 	arg.array = semArray;
@@ -55,9 +55,7 @@ void setSemaphoreArray(unsigned short semArray[]) {
 }
 
 void semaphoreOperation(unsigned short sem_num, short sem_op) {
-	struct sembuf sop = {.sem_num = sem_num, .sem_op = sem_op, .sem_flg = 0};
+	struct sembuf sop = {.sem_num = sem_num, .sem_op = sem_op, .sem_flg = IPC_NOWAIT};
 	
-	if(semop(semid, &sop, 1) == -1) {
-		errExit("semop() failed");
-	};
+	while(semop(semid, &sop, 1) == -1);
 }

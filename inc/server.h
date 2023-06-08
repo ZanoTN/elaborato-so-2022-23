@@ -7,7 +7,7 @@
 struct player_struct {
 	pid_t pid;
 	char symbol;
-	char username[];
+	char username[50];
 };
 
 extern struct player_struct player[];

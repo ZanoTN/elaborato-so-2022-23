@@ -1,9 +1,9 @@
 #ifndef F4CLIENT_H_ 
-#define F4SERVERF4CLIENT_H__H_ 
+#define F4CLIENT_H_ 
 
 
+///	 @param msg Specific error string
 /// @brief Exit from program with error
-/// @param msg Specific error string
 /// @return If the arguments is not valid return -1
 int checkArguments(int argc, char* argv[]);
 

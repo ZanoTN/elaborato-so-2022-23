@@ -25,7 +25,13 @@ struct respodeToRequest {
 	u_int16_t field_width;		// Server: width of field
 };
 
+struct startGame {
+	long mtype;
+	pid_t pidClient;					// Client & Server: pid_t del client
+	char enemy_username[50];			// Server: two username
+};
 
+typedef struct startGame startGame_t;
 typedef struct respodeToRequest respodeToRequest_t;
 typedef struct requestJoinToMatch requestJoinToMatch_t;
 

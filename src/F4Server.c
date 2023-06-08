@@ -10,7 +10,6 @@
 #include"../inc/error_exit.h"
 #include"../inc/printlog.h"
 
-
 int main(int argc, char *argv[]) {
 	
 	if(checkArguments(argc, argv) == -1) {

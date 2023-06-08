@@ -6,7 +6,7 @@
 
 
 extern time_t timeLastSIGINT;
-
+extern int8_t client_id;
 
 /// @brief Handler for SIGINT
 void sigHandlerInt(int signum);

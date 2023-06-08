@@ -12,6 +12,8 @@
 #include"../inc/forza4.h"
 
 time_t timeLastSIGINT = 0;
+int8_t client_id = -1;
+
 
 void sigHandlerInt(int signum) {
 	if(signum != SIGINT) {
@@ -56,7 +58,7 @@ void initClient() {
 }
 
 void requestJoin(char username[50]) {
-	printf("[DEBUG] Send request to join");
+	printf("[DEBUG] Send request to join\n");
 	requestJoinToMatch_t buf;
 	
 	buf.mtype = 1;
@@ -68,7 +70,8 @@ void requestJoin(char username[50]) {
 	reciveMsg(2, &buf2);
 	printf("[DEBUG] Recice responde { approved: %d, nrClient: %d }\n",buf2.approved, buf2.nrClient);
 
-	if(buf2.approved == 1) {
+	if(buf2.approved == 1 && buf2.pidClient == getpid()) {
+		client_id = buf2.nrClient;
 		semid = buf2.semaphoreId;
 		shmid = buf2.sharedMemoryId;
 		shm_pointer = attachSharedMemory(shmid);
@@ -77,10 +80,38 @@ void requestJoin(char username[50]) {
 }
 
 void game() {
-	puts("[DEGUB] In attesa dell'inizione della partita");
+	int end_game = 0;
+	char enemy_username[50];
+	puts("[DEGUB] In attesa inizio partita");
 
+	semaphoreOperation(client_id, -1);
+	startGame_t buf;
+	reciveMsg(10, &buf);
+	printf("[DEBUG] game start: %s\n", buf.enemy_username);
+	strcpy(enemy_username, buf.enemy_username);
+	printf("- %s --", buf.enemy_username);
+	semaphoreOperation((client_id == 0) ? 1 : 0, 1);
 
-	while(1==1);
+	char number[10];
+	int8_t number_int;
+
+	while(!end_game) {
+		semaphoreOperation(client_id, -1);	
+
+		do{
+			system("clear");
+			printGameFieldFormatted();
+			printf("E' il tuo turno!\nInserisci colonna: ");
+			fgets(number, 10, stdin);
+
+			number_int = atoi(number);
+		} while (addCoin(client_id, number_int));
+
+		system("clear");
+		printGameFieldFormatted();
+		printf("E' il turno di %s\n", enemy_username);
+		semaphoreOperation((client_id == 0) ? 1 : 0, 1);
+	}
 }
 
 void closeClient() {
