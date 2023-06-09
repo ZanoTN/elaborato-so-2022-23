@@ -59,3 +59,12 @@ void semaphoreOperation(unsigned short sem_num, short sem_op) {
 	
 	while(semop(semid, &sop, 1) == -1);
 }
+
+int semGetVal(int semNumb) {
+	int val = semctl(semid, semNumb, GETVAL, 0);
+	if (val == -1) {
+		errExit("semctl GETVAL");
+	}
+
+	return val;
+}

@@ -20,4 +20,9 @@ void setSemaphoreArray(u_int16_t semArray[]);
 /// @param sem_op What operation do whit sempaphore
 void semaphoreOperation(unsigned short sem_num, short sem_op);
 
+/// @brief Get value of a secific semaphore
+/// @param semNumb Nr. of semaphore
+/// @return Value of semaphore
+int semGetVal(int semNumb);
+
 #endif

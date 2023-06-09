@@ -27,8 +27,7 @@ struct respodeToRequest {
 
 struct startGame {
 	long mtype;
-	pid_t pidClient;					// Client & Server: pid_t del client
-	char enemy_username[50];			// Server: two username
+	char usernames[2][100];		// Server: two username
 };
 
 typedef struct startGame startGame_t;

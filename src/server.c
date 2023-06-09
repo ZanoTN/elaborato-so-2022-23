@@ -108,25 +108,23 @@ void getUser() {
 }
 
 void game() {
+	startGame_t buf;	
+
 	puts("[DEBUG] Start game");
+
+	strcpy(buf.usernames[0], player[0].username);
+	strcpy(buf.usernames[1], player[1].username);
 	
+	for(int i=0; i<2; i++) {
+		buf.mtype = 3;
+		sendMsg(buf.mtype, &buf);
+	}
+
 	semaphoreOperation(0, 1);
+
+
 	puts("[DEBUG] Send messages to start game");
 	
-	printf("Wait for sem\n");
-	semaphoreOperation(0, 0);	// Client 0
-	startGame_t buf;
-	buf.mtype = 10;
-	buf.pidClient = player[0].pid;
-	printf("++ usernema %s ++",player[1].username );
-	strcpy(buf.enemy_username, player[1].username);
-	sendMsg(buf.mtype, &buf);
-
-	semaphoreOperation(1, 0);	// Client 1	
-	buf.pidClient = player[1].pid;
-	strcpy(buf.enemy_username, player[0].username);
-	sendMsg(buf.mtype, &buf);
-
 
 
 	while(1);	

@@ -12,6 +12,7 @@ size_t size[] = {
 	0,
 	sizeof(requestJoinToMatch_t) - sizeof(long),
 	sizeof(respodeToRequest_t) - sizeof(long),
+	sizeof(startGame_t) - sizeof(long),
 	sizeof(startGame_t) - sizeof(long)
 };
 

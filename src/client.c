@@ -82,18 +82,24 @@ void requestJoin(char username[50]) {
 void game() {
 	int end_game = 0;
 	char enemy_username[50];
+	char number[10];
+	int8_t number_int;
+
 	puts("[DEGUB] In attesa inizio partita");
 
 	semaphoreOperation(client_id, -1);
-	startGame_t buf;
-	reciveMsg(10, &buf);
-	printf("[DEBUG] game start: %s\n", buf.enemy_username);
-	strcpy(enemy_username, buf.enemy_username);
-	printf("- %s --", buf.enemy_username);
+	
+	startGame_t buf;	
+	reciveMsg(3, &buf);
+	strcpy(enemy_username, buf.usernames[((client_id == 0) ? 1 : 0)]);
+
 	semaphoreOperation((client_id == 0) ? 1 : 0, 1);
 
-	char number[10];
-	int8_t number_int;
+	if(client_id == 1) {
+		system("clear");
+		printGameFieldFormatted();
+		printf("E' il turno di %s\n", enemy_username);
+	}
 
 	while(!end_game) {
 		semaphoreOperation(client_id, -1);	
