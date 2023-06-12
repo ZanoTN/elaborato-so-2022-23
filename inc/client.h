@@ -8,8 +8,8 @@
 extern time_t timeLastSIGINT;
 extern int8_t client_id;
 
-/// @brief Handler for SIGINT
-void sigHandlerInt(int signum);
+/// @brief Handler for SIGINT SIGHUP
+void sigHandlerClose(int signum);
 
 /// @brief Handler for SIGTERM
 void sigHandlerTerm(int signum);

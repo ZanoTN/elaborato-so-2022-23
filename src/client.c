@@ -15,8 +15,8 @@ time_t timeLastSIGINT = 0;
 int8_t client_id = -1;
 
 
-void sigHandlerInt(int signum) {
-	if(signum != SIGINT) {
+void sigHandlerClose(int signum) {
+	if(!(signum == SIGINT || signum == SIGHUP)) {
 		return;
 	}
 
@@ -45,9 +45,15 @@ void sigHandlerTerm(int signum) {
 void initClient() {
 	system("clear");
 
-	if (signal(SIGINT, sigHandlerInt) == SIG_ERR) {
-		errExit("signal(SIGINT, sigHandlerInt)");
+	if (signal(SIGINT, sigHandlerClose) == SIG_ERR) {
+		errExit("signal(SIGINT, sigHandlerClose)");
 	}
+
+	if (signal(SIGHUP, sigHandlerClose) == SIG_ERR) {
+		errExit("signal(SIGHUP, sigHandlerCloseServer)");
+	}
+
+
 
 	if (signal(SIGTERM, sigHandlerTerm) == SIG_ERR) {
 		errExit("signal(SIGTERM, sigHandlerTerm)");

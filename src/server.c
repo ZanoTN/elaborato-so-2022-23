@@ -17,8 +17,8 @@
 struct player_struct player[2];
 time_t timeLastSIGINT = 0;
 
-void sigHandlerInt(int signum) {
-	if(signum != SIGINT) {
+void sigHandlerClose(int signum) {
+	if(!(signum == SIGINT || signum == SIGHUP)) {
 		return;
 	}
 
@@ -40,8 +40,12 @@ void initServer(char *argv[]) {
 	player[0].symbol = argv[3][0];
 	player[1].symbol = argv[4][0];
 
-	if (signal(SIGINT, sigHandlerInt) == SIG_ERR) {
-		errExit("signal(SIGINT, sigHandlerInt)");
+	if (signal(SIGINT, sigHandlerClose) == SIG_ERR) {
+		errExit("signal(SIGINT, sigHandlerCloseServer)");
+	}
+
+	if (signal(SIGHUP, sigHandlerClose) == SIG_ERR) {
+		errExit("signal(SIGHUP, sigHandlerCloseServer)");
 	}
 
 	connectToMessageQueue();

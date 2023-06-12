@@ -40,9 +40,9 @@ F4client: create_bin_dir
 
 # Only with kitty work
 test:
-	@kitty -e bin/F4Server 6 5 0 X &
-	@kitty -e bin/F4Client Tony &
-	@kitty -e bin/F4Client Max &
+	@kitty --hold --title "Server" --detach -e bin/F4Server 6 5 0 X
+	@kitty --hold --title "Tony" --detach -e bin/F4Client Tony
+	@kitty --hold --title "Max" --detach -e bin/F4Client Max
 
 clean: create_bin_dir
 	rm -f $(BIN_DIR)/$(TARGET)

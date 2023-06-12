@@ -14,8 +14,8 @@ extern struct player_struct player[];
 extern time_t timeLastSIGINT;
 
 
-/// @brief Handler for SIGINT
-void sigHandlerInt(int signum);
+/// @brief Handler for SIGINT SIGHUP
+void sigHandlerClose(int signum);
 
 /// @brief Initialize all connection for server
 void initServer();
