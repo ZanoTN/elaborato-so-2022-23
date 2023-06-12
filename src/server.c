@@ -81,29 +81,30 @@ void closeServer() {
 
 
 void getUser() {
+	requestJoinToMatch_t buffer_request;
+	
+	
 	printf("[DEBUG] In attesa dei due utenti...\n");
 
 	for(u_int8_t i=0; i<2; i++) {
 		
-		requestJoinToMatch_t buffer;
-		reciveMsg(1, &buffer);
-		
-		player[i].pid = buffer.pidClient;
-		strcpy(player[i].username, buffer.userName);
+		reciveMsg(1, &buffer_request, sizeof(buffer_request));
+		player[i].pid = buffer_request.pidClient;
+		strcpy(player[i].username, buffer_request.userName);
 		printf("[DEBUG] New request to join { pid: %d, username: \"%s\" }\n", player[i].pid, player[i].username);	
 		
-		respodeToRequest_t buffer2;
-		buffer2.pidClient = buffer.pidClient;
-		buffer2.mtype = 2;
-		buffer2.nrClient = i;
-		buffer2.approved = 1;
-		buffer2.sharedMemoryId = shmid;
-		buffer2.semaphoreId = semid;
-		buffer2.field_hight = field_hight;
-		buffer2.field_width = field_width;
-		buffer2.symbols[0] = player[0].symbol;
-		buffer2.symbols[1] = player[1].symbol;
-		sendMsg(buffer2.mtype, &buffer2);
+		respodeToRequest_t buf_request_responde;
+		buf_request_responde.pidClient = buffer_request.pidClient;
+		buf_request_responde.mtype = 2 + buffer_request.pidClient;
+		buf_request_responde.nrClient = i;
+		buf_request_responde.approved = 1;
+		buf_request_responde.sharedMemoryId = shmid;
+		buf_request_responde.semaphoreId = semid;
+		buf_request_responde.field_hight = field_hight;
+		buf_request_responde.field_width = field_width;
+		buf_request_responde.symbols[0] = player[0].symbol;
+		buf_request_responde.symbols[1] = player[1].symbol;
+		sendMsg(&buf_request_responde, sizeof(buf_request_responde));
 	}
 }
 
@@ -117,7 +118,7 @@ void game() {
 	
 	for(int i=0; i<2; i++) {
 		buf.mtype = 3;
-		sendMsg(buf.mtype, &buf);
+		sendMsg(&buf, sizeof(buf));
 	}
 
 	semaphoreOperation(0, 1);

@@ -64,10 +64,10 @@ void requestJoin(char username[50]) {
 	buf.mtype = 1;
 	buf.pidClient = getpid();
 	strcpy(buf.userName, username);
-	sendMsg(buf.mtype, &buf);
+	sendMsg(&buf, sizeof(buf));
 	
 	respodeToRequest_t buf2;
-	reciveMsg(2, &buf2);
+	reciveMsg(2 + getpid(), &buf2, sizeof(buf2));
 	printf("[DEBUG] Recice responde { approved: %d, nrClient: %d }\n",buf2.approved, buf2.nrClient);
 
 	if(buf2.approved == 1 && buf2.pidClient == getpid()) {
@@ -90,7 +90,7 @@ void game() {
 	semaphoreOperation(client_id, -1);
 	
 	startGame_t buf;	
-	reciveMsg(3, &buf);
+	reciveMsg(3, &buf, sizeof(buf));
 	strcpy(enemy_username, buf.usernames[((client_id == 0) ? 1 : 0)]);
 
 	semaphoreOperation((client_id == 0) ? 1 : 0, 1);

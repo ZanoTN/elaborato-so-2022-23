@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<sys/ipc.h>
-#include <sys/msg.h>
+#include<sys/msg.h>
 #include<sys/stat.h>
 
 #include"../inc/message_queue.h"
@@ -8,13 +8,6 @@
 
 int msqid = 0;
 
-size_t size[] = {
-	0,
-	sizeof(requestJoinToMatch_t) - sizeof(long),
-	sizeof(respodeToRequest_t) - sizeof(long),
-	sizeof(startGame_t) - sizeof(long),
-	sizeof(startGame_t) - sizeof(long)
-};
 
 void connectToMessageQueue() {
 	printf("[DEBUG] Inizializzo la connessione o la creazione della message queue... ");
@@ -57,18 +50,20 @@ void disconectFromMessageQueue() {
 	printf("Fatto\n");
 }
 
-void sendMsg(long mType, void* buf) {
+void sendMsg(void* buf, size_t size) {
 	if(msqid == 0) {
 		errExit("sendMsg msqid undefined");
 	}
 
-	while(msgsnd(msqid, buf, size[mType], IPC_NOWAIT) == -1) {}
+	size = size - sizeof(long);
+	while(msgsnd(msqid, buf, size, IPC_NOWAIT) == -1) {}
 }
 
-void reciveMsg(long mType, void* buf) {
+void reciveMsg(long mType, void* buf, size_t size) {
 	if(msqid == 0) {
 		errExit("reciveMsg msqid undefined");
 	}
 
-	while(msgrcv(msqid, buf, size[(int) mType], mType, IPC_NOWAIT) == -1) {}
+	size = size - sizeof(long);
+	while(msgrcv(msqid, buf, size, mType, IPC_NOWAIT) == -1) {}
 }

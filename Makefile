@@ -38,8 +38,13 @@ F4client: create_bin_dir
 	src/semaphore.c \
 	src/forza4.c
 
+# Only with kitty work
+test:
+	@kitty -e bin/F4Server 6 5 0 X &
+	@kitty -e bin/F4Client Tony &
+	@kitty -e bin/F4Client Max &
 
 clean: create_bin_dir
 	rm -f $(BIN_DIR)/$(TARGET)
 
-.PHONY: all clean create_bin_dir	
+.PHONY: all clean create_bin_dir test	

@@ -6,14 +6,14 @@
 
 
 // client: Richiesta di accedere ad una partita
-struct requestJoinToMatch {
+typedef struct requestJoinToMatch {
 	long mtype;
 	pid_t pidClient;					// Client & Server: pid_t del client
 	char userName[50];				// Client: Unsername del client
-};
+} requestJoinToMatch_t;
 
 // server: Risposta del server al client
-struct respodeToRequest {
+typedef struct respodeToRequest {
 	long mtype;
 	pid_t pidClient;					// Client & Server: pid_t del client
 	int sharedMemoryId;				// Server: ID della memoria condivisa
@@ -23,20 +23,16 @@ struct respodeToRequest {
 	char symbols[2];					// Server: Send two symbols for user
 	u_int16_t field_hight;		// Server: hight of field
 	u_int16_t field_width;		// Server: width of field
-};
+} respodeToRequest_t;
 
-struct startGame {
+// Start game message queue
+typedef struct startGame {
 	long mtype;
 	char usernames[2][100];		// Server: two username
-};
-
-typedef struct startGame startGame_t;
-typedef struct respodeToRequest respodeToRequest_t;
-typedef struct requestJoinToMatch requestJoinToMatch_t;
+} startGame_t;
 
 
 extern int msqid;
-extern size_t size[];
 
 
 /// @brief Connessione alla message queue con key generata da ftok; 
@@ -48,11 +44,11 @@ void disconectFromMessageQueue();
 /// @brief Inviare un messaggio
 /// @param mType Tipo del messaggio
 /// @param buf Buffer del messaggio
-void sendMsg(long mType, void* buf);
+void sendMsg(void* buf, size_t size);
 
 /// @brief Ricezione di un messaggio
 /// @param mType Tipo del messaggio
-void reciveMsg(long mType, void* buf);
+void reciveMsg(long mType, void* buf, size_t size);
 
 
 #endif
