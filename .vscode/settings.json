@@ -16,6 +16,8 @@
 		"cstdint": "c",
 		"client.h": "c",
 		"server.h": "c",
-		"source_location": "c"
+		"source_location": "c",
+		"message_queue.h": "c",
+		"shm.h": "c"
 	}
 }

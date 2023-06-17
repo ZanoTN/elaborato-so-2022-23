@@ -40,7 +40,7 @@ F4client: create_bin_dir
 
 # Only with kitty work
 test:
-	@kitty --hold --title "Server" --detach -e bin/F4Server 6 5 0 X
+	@kitty --hold --title "Server" --detach -e bin/F4Server 5 5 0 X
 	@kitty --hold --title "Tony" --detach -e bin/F4Client Tony
 	@kitty --hold --title "Max" --detach -e bin/F4Client Max
 

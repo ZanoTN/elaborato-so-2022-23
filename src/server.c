@@ -33,6 +33,19 @@ void sigHandlerClose(int signum) {
 	}
 }
 
+void sigHandlerStatusCode(int signum) {;
+	if(signum != SIGUSR2) {
+		return;
+	}
+
+	puts("[DEBUG] SIGUSR2 inbound");
+
+	status_t buf;
+	reciveMsg(100, &buf, sizeof(buf));
+	printf("[DEBUG] Recive status code: %d from pid: %d\n", buf.statusCode, buf.pidClient);
+
+}
+
 void initServer(char *argv[]) {
 	int hight = atoi(argv[1]);
 	int whith = atoi(argv[2]);
@@ -41,11 +54,13 @@ void initServer(char *argv[]) {
 	player[1].symbol = argv[4][0];
 
 	if (signal(SIGINT, sigHandlerClose) == SIG_ERR) {
-		errExit("signal(SIGINT, sigHandlerCloseServer)");
+		errExit("signal(SIGINT, sigHandlerClose)");
 	}
-
 	if (signal(SIGHUP, sigHandlerClose) == SIG_ERR) {
-		errExit("signal(SIGHUP, sigHandlerCloseServer)");
+		errExit("signal(SIGHUP, sigHandlerClose)");
+	}
+	if (signal(SIGUSR2, sigHandlerStatusCode) == SIG_ERR) {
+		errExit("signal(SIGUSR2, sigHandlerStatusCode)");
 	}
 
 	connectToMessageQueue();
@@ -59,6 +74,9 @@ void initServer(char *argv[]) {
 	// forza4 lib
 	passVariableToF4Lib(shm_pointer, hight, whith, player[0].symbol, player[1].symbol);
 	generateGameField();	
+
+
+	printf("-- %d --\n", getpid());
 }
 
 void closeServer() {
@@ -98,8 +116,8 @@ void getUser() {
 		printf("[DEBUG] New request to join { pid: %d, username: \"%s\" }\n", player[i].pid, player[i].username);	
 		
 		respodeToRequest_t buf_request_responde;
-		buf_request_responde.pidClient = buffer_request.pidClient;
-		buf_request_responde.mtype = 2 + buffer_request.pidClient;
+		buf_request_responde.pidServer = getpid();
+		buf_request_responde.mtype = 200000 + buffer_request.pidClient;
 		buf_request_responde.nrClient = i;
 		buf_request_responde.approved = 1;
 		buf_request_responde.sharedMemoryId = shmid;
@@ -108,6 +126,7 @@ void getUser() {
 		buf_request_responde.field_width = field_width;
 		buf_request_responde.symbols[0] = player[0].symbol;
 		buf_request_responde.symbols[1] = player[1].symbol;
+		
 		sendMsg(&buf_request_responde, sizeof(buf_request_responde));
 	}
 }
@@ -127,10 +146,8 @@ void game() {
 
 	semaphoreOperation(0, 1);
 
-
-	puts("[DEBUG] Send messages to start game");
+	while(1) {
+		// TODO: Timeout check with semaphore	
+	}	
 	
-
-
-	while(1);	
 }

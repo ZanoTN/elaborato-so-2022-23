@@ -70,15 +70,78 @@ int addCoin(int player, int8_t colum) {
 	int8_t (*mat)[field_width] = (void*) gameFieldArr;
 	int line_tmp = field_hight - 1;
 
-	// TODO: Verificare se la colonna esiste
+
+	if(colum < 0 || colum >= field_width) {
+		return -2;
+	}
 
 	while(line_tmp >= 0) {
 		if(mat[line_tmp][colum] == -1) {
 			mat[line_tmp][colum] = player;
-			return 0;
+			return line_tmp;
 		}
 		line_tmp--;
 	}
 
 	return -1;
+}
+
+int checkWin(int line, int column) {
+	int8_t (*mat)[field_width] = (void*) gameFieldArr;
+
+
+	// TODO: check win
+
+	// Orizzontale
+	if((1 + sumSequenceDir(line, column, 0, 1, 0, 0) + sumSequenceDir(line, column, 0, 0, 0, 1)) >= 4) {
+		return 1;
+	}
+	// Vertivale
+	if((1 + sumSequenceDir(line, column, 1, 0, 0, 0) + sumSequenceDir(line, column, 0, 0, 1, 0)) >= 4) {
+		return 1;
+	}
+	// Obliquo
+	if((1 + sumSequenceDir(line, column, 1, 1, 0, 0) + sumSequenceDir(line, column, 0, 0, 1, 1)) >= 4) {
+		return 1;
+	}
+	if((1 + sumSequenceDir(line, column, 1, 0, 0, 1) + sumSequenceDir(line, column, 0, 1, 1, 0)) >= 4) {
+		return 1;
+	}
+
+	// Check draw
+	for(int i=0;i<field_width;i++) {
+		if(mat[0][i] == -1) {
+			return 0;
+		}
+	}
+	return -1;
+}
+
+int sumSequenceDir(int line_coin, int col_coin, int up, int right, int down, int left) {
+	int8_t (*mat)[field_width] = (void*) gameFieldArr;
+
+	int end_loop = 0;
+	int tmp_line = line_coin;
+	int tmp_col = col_coin;
+	int counter = 0;
+	int8_t idReferenceCoin = mat[line_coin][col_coin];
+
+	while(!end_loop) {
+		tmp_line = tmp_line + up - down;
+		tmp_col = tmp_col + right - left;
+
+		if(tmp_line < 0 || tmp_line >= field_hight)
+			return counter;
+
+		if(tmp_col < 0 || tmp_col >= field_width)
+			return counter;
+
+		if(mat[tmp_line][tmp_col] == idReferenceCoin) {
+			counter++;
+		} else {
+			return counter;
+		}
+	}
+
+	return 0;
 }

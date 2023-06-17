@@ -15,7 +15,7 @@ typedef struct requestJoinToMatch {
 // server: Risposta del server al client
 typedef struct respodeToRequest {
 	long mtype;
-	pid_t pidClient;					// Client & Server: pid_t del client
+	pid_t pidServer;					// Client & Server: pid_t del client
 	int sharedMemoryId;				// Server: ID della memoria condivisa
 	int semaphoreId;
 	int8_t approved;					// Server: Richiesta approvata
@@ -30,6 +30,13 @@ typedef struct startGame {
 	long mtype;
 	char usernames[2][100];		// Server: two username
 } startGame_t;
+
+// End game
+typedef struct status {
+	long mtype;
+	pid_t pidClient;
+	int8_t statusCode;
+} status_t;
 
 
 extern int msqid;

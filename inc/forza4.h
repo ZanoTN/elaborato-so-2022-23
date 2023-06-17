@@ -22,7 +22,24 @@ void printGameFieldFormatted();
 /// @brief Add coin to colum
 /// @param player id player
 /// @param colum nr. colum
-/// @return -1 coin not added
+/// @return -1: Column full, -2, invalid column, in case of success return the line of coin
 int addCoin(int player, int8_t colum);
+
+/// @brief Check win from the last coin added
+/// @param line position line
+/// @param column position column
+/// @return 1 win, 0 not win, -1 draw	
+int checkWin(int line, int column);
+
+/// @brief 
+/// @param line_coin 
+/// @param col_coin 
+/// @param up 
+/// @param right 
+/// @param down 
+/// @param left 
+/// @return 
+int sumSequenceDir(int line_coin, int col_coin, int up, int right, int down, int left);
+
 
 #endif
