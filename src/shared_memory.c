@@ -38,7 +38,7 @@ void genereteServerSharedMemory(u_int16_t fieldHight, u_int16_t fieldWidth) {
 void detachSharedMemory() {
 	printf("[DEBUG] Disconnesine dalla memoria condivisa... ");
 	
-	if (shmdt(shm_pointer) == (__uint8_t) -1)
+	if(shmdt(shm_pointer) == -1)
 		errExit("shmdt failed");
 
 	printf("Fatto\n");

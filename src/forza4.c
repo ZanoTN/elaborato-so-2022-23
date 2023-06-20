@@ -89,9 +89,6 @@ int addCoin(int player, int8_t colum) {
 int checkWin(int line, int column) {
 	int8_t (*mat)[field_width] = (void*) gameFieldArr;
 
-
-	// TODO: check win
-
 	// Orizzontale
 	if((1 + sumSequenceDir(line, column, 0, 1, 0, 0) + sumSequenceDir(line, column, 0, 0, 0, 1)) >= 4) {
 		return 1;
@@ -144,4 +141,38 @@ int sumSequenceDir(int line_coin, int col_coin, int up, int right, int down, int
 	}
 
 	return 0;
+}
+
+void updateDisplay(int type) {
+	system("clear");
+	switch(type) {
+	case F4_USER_ROUND:
+		printGameFieldFormatted();
+		printf("\nE' il tuo turno\n");
+		break;
+	
+	case F4_ENEMY_ROUND:
+		printGameFieldFormatted();
+		printf("\nIn attesa dell'avversario\n");
+		break;
+
+	case F4_USER_WIN:
+		printGameFieldFormatted();
+		printf("\nVittoria! :)\n");
+		break;
+
+	case F4_USER_DEFEAT:
+		printGameFieldFormatted();
+		printf("\nSconfitta! (-_-)\n");
+		break;
+
+	case F4_USER_PARITY:
+		printGameFieldFormatted();
+		printf("\nParità...\n");
+		break;
+
+
+	default:
+		break;
+	}
 }

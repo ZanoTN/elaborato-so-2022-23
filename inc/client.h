@@ -4,16 +4,21 @@
 #include<sys/types.h>
 #include<time.h>
 
-typedef struct global_var{
+
+typedef struct player {
+	pid_t pid;
+	char username[50];
+} player_t;
+
+typedef struct var{
 	pid_t pid_server;
-	pid_t pid_other_client;
 	int8_t client_id;
-} global_var_t;
+	player_t enemy_player;
+	int end_match;
+} var_t;
 
 
 extern time_t timeLastSIGINT;
-extern pid_t pidServer;
-extern int8_t client_id;
 
 /// @brief Handler for SIGINT SIGHUP
 void sigHandlerClose(int signum);
@@ -42,6 +47,9 @@ void printGame();
 
 /// @brief Send status to a server
 /// @param statusCode code
-void sendStatus(int statusCode);
+void sendStatus(u_int16_t statusCode);
+
+/// @brief loop of the game
+void loop();
 
 #endif

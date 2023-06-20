@@ -29,13 +29,14 @@ typedef struct respodeToRequest {
 typedef struct startGame {
 	long mtype;
 	char usernames[2][100];		// Server: two username
+	pid_t pid_player[2];
 } startGame_t;
 
 // End game
 typedef struct status {
 	long mtype;
 	pid_t pidClient;
-	int8_t statusCode;
+	u_int16_t statusCode;
 } status_t;
 
 

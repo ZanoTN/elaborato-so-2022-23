@@ -12,13 +12,8 @@
 #include"../inc/forza4.h"
 
 
-global_var_t global_var_data;
-
+var_t global_var;
 time_t timeLastSIGINT = 0;
-
-// TO Remove
-pid_t pidServer = 0;
-int8_t client_id = -1;
 
 
 void sigHandlerClose(int signum) {
@@ -42,21 +37,37 @@ void sigHandlerTerm(int signum) {
 	if(signum != SIGTERM) {
 		return;
 	}
-
+	
 	printf("\033[0;31m[DEBUG] Avvio chiusura! [SIGTERM]\033[0m\n");
 	closeClient();
 	exit(0);
 }
 
 void sigHandlerStatusCode(int signum) {
-	printf("here");
 	if(signum != SIGUSR2) {
 		return;
 	}
 
-	// status_t buf;
-	//reciveMsg(100, &buf, sizeof(buf));
-	//printf("[DEBUG] Recive status code: %d from pid: %d", buf.statusCode, buf.pidClient);
+	status_t buf;
+	reciveMsg(100, &buf, sizeof(buf));
+
+	switch(buf.statusCode) {
+	case 200:
+		updateDisplay(F4_USER_DEFEAT);
+		global_var.end_match = 1;
+		semaphoreOperation(global_var.client_id, 1);
+		break;
+
+	case 210:
+		updateDisplay(F4_USER_DEFEAT);
+		global_var.end_match = 1;
+		semaphoreOperation(global_var.client_id, 1);
+		break;
+	
+	default:
+		break;
+
+	}
 
 }
 
@@ -96,8 +107,8 @@ void requestJoin(char username[50]) {
 	printf("[DEBUG] Recice responde { approved: %d, nrClient: %d }\n",buf2.approved, buf2.nrClient);
 
 	if(buf2.approved == 1) {
-		client_id = buf2.nrClient;
-		global_var_data.pid_server = buf2.pidServer;
+		global_var.client_id = buf2.nrClient;
+		global_var.pid_server = buf2.pidServer;
 		semid = buf2.semaphoreId;
 		shmid = buf2.sharedMemoryId;
 		shm_pointer = attachSharedMemory(shmid);
@@ -110,40 +121,56 @@ void requestJoin(char username[50]) {
 }
 
 void game() {
-	int end_game = 0;
-	int end_turn = 0;
-	int retAddCoin, retCheckWin;
-	char enemy_username[50];
-	char number[10];
-	int8_t number_int;
 
 	puts("[DEGUB] In attesa inizio partita");
-
-	semaphoreOperation(client_id, -1);
-	
+	semaphoreOperation(global_var.client_id, -1);
 	startGame_t buf;	
 	reciveMsg(3, &buf, sizeof(buf));
-	strcpy(enemy_username, buf.usernames[((client_id == 0) ? 1 : 0)]);
+	strcpy(global_var.enemy_player.username, buf.usernames[((global_var.client_id == 0) ? 1 : 0)]);
+	global_var.enemy_player.pid = buf.pid_player[((global_var.client_id == 0) ? 1 : 0)];
+	semaphoreOperation((global_var.client_id == 0) ? 1 : 0, 1);
 
-	semaphoreOperation((client_id == 0) ? 1 : 0, 1);
 
-	if(client_id == 1) {
-		printGame();
-		printf("E' il turno di %s\n", enemy_username);
+	if(global_var.client_id == 1) {
+		updateDisplay(F4_ENEMY_ROUND);
 	}
 
-	while(!end_game) {
-		semaphoreOperation(client_id, -1);
-		end_turn = 0;
+	loop();	
 
-		printGame();
-		printf("E' il tuo turno!\nInserisci colonna: ");
+	printf("\nEND OF GAME\n\n");
+	closeClient();
+}
+
+void closeClient() {
+	if(shmid != 0) {
+		detachSharedMemory();
+	}
+	exit(EXIT_SUCCESS);
+}
+
+void loop() {
+	global_var.end_match = 0;
+	int end_turn = 0;
+	int retAddCoin, retCheckWin;
+	char number[10];
+	int8_t number_int;
+	
+	while(!global_var.end_match) {
+		semaphoreOperation(global_var.client_id, -1);
+
+		if(global_var.end_match) return;
+
+		updateDisplay(F4_USER_ROUND);
+		printf("Inserisci colonna: ");
 
 		do{
-			fgets(number, 10, stdin);
-			number_int = atoi(number);
+			if(fgets(number, 10, stdin) == NULL) {
+				if(feof(stdin)) return;
+			};
 
-			retAddCoin = addCoin(client_id, number_int);
+			number_int = atoi(number);
+			
+			retAddCoin = addCoin(global_var.client_id, number_int);
 			switch(retAddCoin) {
 			case -1:
 				printf("Colonna piena, ritenta: ");
@@ -156,51 +183,36 @@ void game() {
 				break;
 			}
 		} while (!end_turn);
-
-		printGame();
-
+		
 		retCheckWin = checkWin(retAddCoin, number_int);
-		if(retCheckWin == 1 || retCheckWin == -1) {
 
-			if(retCheckWin == 1) {
-				printf("Vittoria!\n");
-			} else if(retCheckWin == -1) {
-				printf("parità!\n");
-			}
+		if(retCheckWin == 1) {
+			updateDisplay(F4_USER_WIN);
+			sendStatus(200);
+			return;
 
-			sendStatus(retCheckWin);
-
+		} else if(retCheckWin == -1) {
+			updateDisplay(F4_USER_PARITY);
+			sendStatus(210);
+			return;
+		
 		}else{
-			printf("E' il turno di %s\n", enemy_username);
+			updateDisplay(F4_ENEMY_ROUND);
+			semaphoreOperation((global_var.client_id == 0) ? 1 : 0, 1);
 		}
-
-		semaphoreOperation((client_id == 0) ? 1 : 0, 1);
 	}
 }
 
-void closeClient() {
-	// disconectFromMessageQueue(); only server can remove it
-
-	if(shmid != 0) {
-		detachSharedMemory();
-	}
-}
-
-void printGame() {
-	system("clear");
-	printGameFieldFormatted();
-}
-
-void sendStatus(int statusCode) {
+void sendStatus(u_int16_t statusCode) {
 	status_t buf_status;
 	
 	buf_status.mtype = 100;
 	buf_status.pidClient = getpid();
 	buf_status.statusCode = statusCode;
 
-	kill(global_var_data.pid_server, SIGUSR2);
+	kill(global_var.pid_server, SIGUSR2);
 	sendMsg(&buf_status, sizeof(buf_status));
 	
-	kill(global_var_data.pid_other_client, SIGUSR2);
+	kill(global_var.enemy_player.pid , SIGUSR2);
 	sendMsg(&buf_status, sizeof(buf_status));
 }

@@ -138,7 +138,9 @@ void game() {
 
 	strcpy(buf.usernames[0], player[0].username);
 	strcpy(buf.usernames[1], player[1].username);
-	
+	buf.pid_player[0] = player[0].pid;
+	buf.pid_player[1] = player[1].pid;
+
 	for(int i=0; i<2; i++) {
 		buf.mtype = 3;
 		sendMsg(&buf, sizeof(buf));

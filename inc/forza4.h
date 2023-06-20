@@ -1,6 +1,13 @@
 #ifndef FORZA4_H_
 #define FORZA4_H_
 
+#define F4_USER_ROUND 10
+#define F4_ENEMY_ROUND 20
+#define F4_USER_WIN 30
+#define F4_USER_DEFEAT 40
+#define F4_USER_PARITY 50
+
+
 extern int8_t *gameFieldArr;
 extern u_int16_t field_hight;
 extern u_int16_t field_width;
@@ -41,5 +48,8 @@ int checkWin(int line, int column);
 /// @return 
 int sumSequenceDir(int line_coin, int col_coin, int up, int right, int down, int left);
 
+/// @brief update what user see on console
+/// @param type 1: user round, 2,
+void updateDisplay(int type);
 
 #endif
